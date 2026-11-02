@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kavali Yashwanth Royal — Data Engineer</title>
+<meta name="description" content="Data engineer in Bangalore. Batch ELT on AWS, Kafka streaming with Spark, and dbt analytics engineering. Four projects, each with tests and a runnable pipeline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --surface: #fffdf9;
+    --surface-2: #f1ece2;
+    --text: #16202b;
+    --text-dim: #5d6b7a;
+    --border: rgba(22, 32, 43, 0.10);
+    --border-strong: rgba(22, 32, 43, 0.20);
+    --navy: #1e3a5f;
+    --navy-dim: rgba(30, 58, 95, 0.08);
+    --gold: #a87a1f;
+    --gold-dim: rgba(168, 122, 31, 0.12);
+    --green: #2f6f5e;
+    --green-dim: rgba(47, 111, 94, 0.10);
+    --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+    --shadow: 0 1px 2px rgba(22, 32, 43, 0.04), 0 8px 24px -12px rgba(22, 32, 43, 0.18);
+    --radius: 14px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141a;
+      --surface: #161d26;
+      --surface-2: #1d262f;
+      --text: #e9e4da;
+      --text-dim: #98a4b2;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --navy: #8fb4dc;
+      --navy-dim: rgba(143, 180, 220, 0.12);
+      --gold: #d4a73a;
+      --gold-dim: rgba(212, 167, 58, 0.14);
+      --green: #6fbfa4;
+      --green-dim: rgba(111, 191, 164, 0.12);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse 70% 50% at 15% -5%, var(--gold-dim) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 45% at 95% 8%, var(--navy-dim) 0%, transparent 65%);
+    background-repeat: no-repeat;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--navy); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: var(--gold); }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 3px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- top nav ---------- */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .topnav__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .topnav__mark {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .topnav__links { display: flex; gap: 22px; }
+  .topnav__links a {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .topnav__links a:hover { color: var(--gold); }
+  @media (max-width: 700px) {
+    /* the name is already the page headline on small screens; dropping it here
+       stops the section links from clipping */
+    .topnav__mark { display: none; }
+    .topnav__inner { padding: 12px 20px; }
+    .topnav__links { gap: 20px; justify-content: space-between; width: 100%; }
+    .topnav__links a { font-size: 11px; letter-spacing: 0.8px; }
+  }
+
+  /* ---------- shared ---------- */
+  section { padding: 76px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .label::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin: 0 0 14px;
+  }
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+  p { margin: 0 0 16px; max-width: 68ch; }
+  p.lede { font-size: 18.5px; color: var(--text-dim); max-width: 62ch; }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 84px 0 68px; border-bottom: 1px solid var(--border); }
+  .hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 22px;
+  }
+  .hero__name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(46px, 8.5vw, 84px);
+    line-height: 0.98;
+    letter-spacing: -1.8px;
+    margin: 0 0 22px;
+    max-width: 15ch;
+  }
+  .hero__role {
+    font-size: clamp(19px, 2.2vw, 23px);
+    color: var(--text-dim);
+    max-width: 56ch;
+    margin: 0 0 30px;
+  }
+  .hero__role strong { color: var(--text); font-weight: 600; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
+    padding: 6px 13px;
+    border-radius: 100px;
+    margin-bottom: 30px;
+  }
+  .pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    padding: 11px 18px;
+    border-radius: 9px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--gold); color: var(--text); }
+  .btn--primary {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--surface);
+  }
+  .btn--primary:hover { background: var(--gold); border-color: var(--gold); color: #16202b; }
+
+  /* ---------- KPI row ---------- */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin-top: 54px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    animation: fadeScale 0.4s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.07s);
+  }
+  .kpi__value {
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+  @keyframes fadeScale {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ---------- projects ---------- */
+  .project--hero {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 34px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 26px;
+    animation: fadeUp 0.5s ease-out both;
+  }
+  .project--hero > * { min-width: 0; }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+  .project {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.5s ease-out both;
+    animation-delay: calc(var(--i, 0) * 0.08s);
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+  .project:hover { transform: translateY(-3px); border-color: var(--border-strong); }
+  .project > * { min-width: 0; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .project__body { padding: 24px 24px 26px; display: flex; flex-direction: column; flex: 1; }
+  .project__kicker {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .project__body h3 { margin-bottom: 10px; }
+  .project__body p { font-size: 15px; color: var(--text-dim); margin-bottom: 18px; }
+
+  .project__media {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    display: block;
+    line-height: 0;
+  }
+  .project__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .project--hero .project__media {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .stat {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    color: var(--text);
+    background: var(--gold-dim);
+    border: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+    padding: 4px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.4px;
+    color: var(--text-dim);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  .project__link {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    color: var(--navy);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+  }
+  .project__link:hover { color: var(--gold); }
+  .project__link svg { flex: none; }
+
+  /* ---------- skills ---------- */
+  .skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 34px;
+  }
+  .skills > * { min-width: 0; }
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--navy);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .skill-group__title {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .skill-group ul { list-style: none; margin: 0; padding: 0; }
+  .skill-group li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 15px;
+    line-height: 1.85;
+  }
+  .skill-group li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .skill-group code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--navy-dim);
+    color: var(--navy);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* ---------- education ---------- */
+  .edu {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 12px;
+    padding: 30px 32px;
+    box-shadow: var(--shadow);
+    margin-top: 30px;
+  }
+  .edu > * { min-width: 0; }
+  .edu__school {
+    font-family: var(--font-display);
+    font-size: clamp(23px, 3vw, 29px);
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+  .edu__degree { font-size: 16.5px; margin: 0 0 4px; }
+  .edu__meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    margin: 0;
+  }
+  .edu__grade {
+    text-align: right;
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+  }
+  .edu__cgpa {
+    font-family: var(--font-display);
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .edu__cgpa-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 7px;
+  }
+  @media (max-width: 700px) {
+    .edu { grid-template-columns: 1fr; }
+    .edu__grade {
+      text-align: left;
+      padding-left: 0;
+      padding-top: 18px;
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+  }
+
+  /* ---------- contact ---------- */
+  .contact { text-align: left; }
+  .contact__big {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4.4vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    max-width: 22ch;
+    margin: 0 0 26px;
+  }
+
+  footer {
+    padding: 34px 0 46px;
+    border-top: 1px solid var(--border);
+  }
+  footer .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+  }
+
+  @media (max-width: 860px) {
+    .project--hero { grid-template-columns: 1fr; gap: 24px; padding: 24px; }
+    section { padding: 58px 0; }
+    .hero { padding: 60px 0 52px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav__inner">
+    <a class="topnav__mark" href="#top">Kavali Yashwanth Royal</a>
+    <div class="topnav__links">
+      <a href="#work">Work</a>
+      <a href="#stack">Stack</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="hero__eyebrow">Data Engineer · Bangalore, India</p>
+    <h1 class="hero__name">Kavali Yashwanth Royal</h1>
+    <p class="hero__role">
+      I build pipelines that land messy data, test it, and
+      <strong>refuse to publish a number that fails a check</strong> — batch on AWS,
+      streaming with Kafka and Spark, and dbt on top.
+    </p>
+    <span class="pill">Open to data engineering roles</span>
+    <div class="links">
+      <a class="btn btn--primary" href="https://github.com/Yashu24-coder" target="_blank" rel="noopener">
+        GitHub
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+      <a class="btn" href="https://www.linkedin.com/in/yashwanth-royal-kavali-226378259" target="_blank" rel="noopener">
+        LinkedIn
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+      <a class="btn" href="mailto:yashwanthroyal9133@gmail.com">
+        yashwanthroyal9133@gmail.com
+      </a>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi" style="--i: 0">
+        <div class="kpi__value">4</div>
+        <div class="kpi__label">Pipelines shipped</div>
+      </div>
+      <div class="kpi" style="--i: 1">
+        <div class="kpi__value">75</div>
+        <div class="kpi__label">Automated tests</div>
+      </div>
+      <div class="kpi" style="--i: 2">
+        <div class="kpi__value">4/4</div>
+        <div class="kpi__label">CI pipelines green</div>
+      </div>
+      <div class="kpi" style="--i: 3">
+        <div class="kpi__value">12</div>
+        <div class="kpi__label">Data quality gates</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="work">
+  <div class="wrap">
+    <p class="label">Selected work</p>
+    <h2>Four pipelines, each runnable from a clone</h2>
+    <p class="lede">
+      Every project below runs end to end without an AWS account or a Docker daemon,
+      carries its own test suite, and states in its README what it does not do.
+    </p>
+
+    <article class="project--hero">
+      <div class="project__body">
+        <p class="project__kicker">Flagship · Batch ELT</p>
+        <h3>Retail data platform on AWS</h3>
+        <p>
+          Four inconsistent CSV exports land in S3, get cleaned once in Glue, and come out as a
+          tested star schema that Athena and Redshift can both read. A run that fails a quality
+          gate publishes nothing.
+        </p>
+        <div class="stats">
+          <span class="stat">12/12 gates</span>
+          <span class="stat">23 tests</span>
+          <span class="stat">2,944 fact rows</span>
+          <span class="stat">₹1.26 Cr revenue</span>
+        </div>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">PySpark</span>
+          <span class="tag">AWS Glue</span>
+          <span class="tag">Athena</span>
+          <span class="tag">Redshift</span>
+          <span class="tag">Terraform</span>
+          <span class="tag">DuckDB</span>
+        </div>
+        <a class="project__link" href="https://github.com/Yashu24-coder/aws-retail-data-platform" target="_blank" rel="noopener">
+          Read the repo
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+      <div class="project__media">
+        <img src="https://raw.githubusercontent.com/Yashu24-coder/aws-retail-data-platform/main/docs/images/architecture.png"
+             alt="Architecture diagram: sources into S3 bronze, Glue PySpark to silver and gold, served through Athena and Redshift Serverless"
+             loading="lazy" width="1400" height="560">
+      </div>
+    </article>
+
+    <div class="project-grid">
+      <article class="project" style="--i: 0">
+        <div class="project__media">
+          <img src="https://raw.githubusercontent.com/Yashu24-coder/streaming-orders-pipeline/main/docs/images/architecture.png"
+               alt="Streaming architecture: Kafka topic into a Spark job with a watermark, out to a parquet lake and a dead-letter queue"
+               loading="lazy" width="1400" height="560">
+        </div>
+        <div class="project__body">
+          <p class="project__kicker">Streaming</p>
+          <h3>Kafka order events</h3>
+          <p>
+            At-least-once delivery, out-of-order mobile clients and poison records handled
+            explicitly: dedupe, a 120-second watermark, and a dead-letter queue that explains
+            every rejection.
+          </p>
+          <div class="stats">
+            <span class="stat">41,236 events</span>
+            <span class="stat">7.34% DLQ</span>
+            <span class="stat">20 tests</span>
+          </div>
+          <div class="tags">
+            <span class="tag">Kafka</span>
+            <span class="tag">Spark Streaming</span>
+            <span class="tag">PySpark</span>
+            <span class="tag">Parquet</span>
+          </div>
+          <a class="project__link" href="https://github.com/Yashu24-coder/streaming-orders-pipeline" target="_blank" rel="noopener">
+            Read the repo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="project" style="--i: 1">
+        <div class="project__media">
+          <img src="https://raw.githubusercontent.com/Yashu24-coder/dbt-saas-analytics/main/docs/images/lineage.png"
+               alt="dbt lineage graph: five raw CSV sources into staging models, then intermediate, then six marts"
+               loading="lazy" width="1400" height="560">
+        </div>
+        <div class="project__body">
+          <p class="project__kicker">Analytics engineering</p>
+          <h3>SaaS revenue with dbt</h3>
+          <p>
+            MRR, net new MRR and cohort retention defined once, in one model, so the numbers
+            reconcile by construction. Incremental fact table, a type-2 snapshot, 27 tests.
+          </p>
+          <div class="stats">
+            <span class="stat">13 models</span>
+            <span class="stat">27 tests</span>
+            <span class="stat">$248k MRR</span>
+          </div>
+          <div class="tags">
+            <span class="tag">dbt</span>
+            <span class="tag">SQL</span>
+            <span class="tag">DuckDB</span>
+            <span class="tag">Data modelling</span>
+          </div>
+          <a class="project__link" href="https://github.com/Yashu24-coder/dbt-saas-analytics" target="_blank" rel="noopener">
+            Read the repo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="project" style="--i: 2">
+        <div class="project__body" style="padding-top: 28px">
+          <p class="project__kicker">Lakehouse</p>
+          <h3>NYC taxi on S3</h3>
+          <p>
+            A bronze / silver / gold lakehouse over the public NYC TLC trip records: Glue
+            transformations, Athena analysis, and Terraform for every bucket and job. The
+            project where the AWS patterns started.
+          </p>
+          <div class="stats">
+            <span class="stat">5 tests</span>
+            <span class="stat">Terraform</span>
+            <span class="stat">Athena SQL</span>
+          </div>
+          <div class="tags">
+            <span class="tag">AWS</span>
+            <span class="tag">Glue</span>
+            <span class="tag">Athena</span>
+            <span class="tag">Parquet</span>
+            <span class="tag">pandas</span>
+          </div>
+          <a class="project__link" href="https://github.com/Yashu24-coder/aws-nyc-taxi-data-engineering" target="_blank" rel="noopener">
+            Read the repo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <p class="label">Stack</p>
+    <h2>What I actually work in</h2>
+    <p class="lede">
+      Only what the four repositories above can back up. Nothing listed here is something I have
+      read about but never shipped.
+    </p>
+
+    <div class="skills">
+      <div class="skill-group">
+        <p class="skill-group__title">Languages</p>
+        <ul>
+          <li><code>Python</code> — pipelines, tests, tooling</li>
+          <li><code>SQL</code> — modelling, window functions</li>
+          <li><code>PySpark</code> — batch and streaming jobs</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group__title">Data</p>
+        <ul>
+          <li><code>dbt</code> — models, tests, snapshots</li>
+          <li><code>Kafka</code> — topics, offsets, delivery semantics</li>
+          <li><code>Parquet</code> — partitioning, compression</li>
+          <li><code>DuckDB</code> — local warehouse, fast iteration</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group__title">Cloud</p>
+        <ul>
+          <li><code>S3</code> — medallion layers, lifecycle rules</li>
+          <li><code>Glue</code> — catalog, crawlers, ETL jobs</li>
+          <li><code>Athena</code> — external tables, partition pruning</li>
+          <li><code>Redshift Serverless</code> — COPY, MERGE, dist/sort keys</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <p class="skill-group__title">Engineering</p>
+        <ul>
+          <li><code>Terraform</code> — all infrastructure as code</li>
+          <li><code>pytest</code> — unit and contract tests</li>
+          <li><code>GitHub Actions</code> — CI on every push</li>
+          <li><code>Docker</code> — local Kafka stack</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <p class="label">Education</p>
+    <h2>Where the fundamentals came from</h2>
+
+    <div class="edu">
+      <div>
+        <h3 class="edu__school">Sri Venkateshwara College of Engineering and Technology</h3>
+        <p class="edu__degree">Bachelor of Technology — Computer Science (Artificial Intelligence &amp; Machine Learning)</p>
+        <p class="edu__meta">Graduated 2025</p>
+      </div>
+      <div class="edu__grade">
+        <div class="edu__cgpa">8.31</div>
+        <div class="edu__cgpa-label">CGPA / 10</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <p class="label">Contact</p>
+    <h2 class="contact__big">Hiring for a data engineering role?</h2>
+    <p class="lede">
+      I am looking for a first data engineering role in Bangalore or remote. The fastest way to
+      judge whether I can do the work is to open one of the repositories and run
+      <code>make run</code> — it takes about ten seconds.
+    </p>
+    <div class="links">
+      <a class="btn btn--primary" href="mailto:yashwanthroyal9133@gmail.com">
+        Email me
+      </a>
+      <a class="btn" href="https://github.com/Yashu24-coder" target="_blank" rel="noopener">
+        github.com/Yashu24-coder
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+      <a class="btn" href="https://www.linkedin.com/in/yashwanth-royal-kavali-226378259" target="_blank" rel="noopener">
+        LinkedIn
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Kavali Yashwanth Royal · Bangalore, India</span>
+    <span>Built from my GitHub · 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>
